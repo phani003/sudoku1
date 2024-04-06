@@ -1,0 +1,696 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>SUDOKU</title>
+
+    <link rel="stylesheet" href="css/jquerycss.css" />
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery1_3.js"></script>
+    <style type="text/css">
+        body {
+            background-image: url('images/back2.jpg');
+        }
+        .sudokutable {
+            border-collapse: collapse;
+            border-color: black;
+        }
+
+        .td {
+            width: 9vh;
+            height: 9vh;
+            text-align: center;
+        }
+
+        .trwall {
+            height: 0px;
+            background-color: red;
+        }
+
+        .tdwall {
+            width: 0px;
+            background-color: red;
+        }
+
+        .spdata {
+            width: 100%;
+            height: 100%;
+        }
+
+        .spdata2 {
+            width: 100%;
+            height: 100%;
+            background-color: wheat;
+        }
+
+        .setable {
+            height: 9vh;
+            width: 80vh;
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#maindata").dialog({
+                resizable: false,
+                width: 500,
+                height: 400,
+                modal: true,
+                autoOpen: false,
+                title: "SUDOKU"
+            });
+
+            dailogopen();
+
+        });
+        function selectmode() {
+            let modes = $("#modes").val();
+            if (modes == "Easy") {
+                fntimer();
+                fnautofill("15");
+            } else if (modes == "Medium") {
+                fntimer();
+                fnautofill("12");
+            } else if (modes == "Hard") {
+                fntimer();
+                fnautofill("6");
+            }
+            $("#modes").hide();
+            $("#spmode").show();
+            $("#spmode").text(modes);
+            $("#btsel").hide();
+            $("#lbmodes").text(modes);
+            $("#maindata").dialog("close");
+
+        }
+        function dailogopen() {
+            $("#maindata").dialog("open");
+            if ($("#hdnmis").val() == "3") {
+                $("#hides1").show();
+                $("#hides2").show();
+                $("#lbmistpop").text($("#hdnmis").val());
+            }
+            return false;
+        }
+        function fncheckingdata(id) {
+            let a = $("#hdnselectvalue").val();
+            let totalid = $("#" + id);
+            let r = totalid.attr("r").substring(1, 2);
+            let v = totalid.attr("v").substring(1, 2);
+            let b = totalid.attr("b").substring(1, 2);
+            let ff = fnids(r, v, b);
+            const ched = ff.split("@");
+            let f = "1";
+            $("#hdnexistid1").val("");
+            $("#hdnexistid2").val("");
+            $("#hdnexistid3").val("");
+
+            if (a != "") {
+
+                let id1 = datachecking(ched[0], a);
+                let id2 = datachecking(ched[1], a);
+                let id3 = datachecking(ched[2], a);
+                $("#hdnexistid1").val(id1.split("@")[1]);
+                $("#hdnexistid2").val(id2.split("@")[1]);
+                $("#hdnexistid3").val(id3.split("@")[1]);
+
+                let f1 = id1.split("@")[0];
+                let f2 = id2.split("@")[0];
+                let f3 = id3.split("@")[0];
+                let mist = $("#hdnmis").val();
+                if (f1 == "0" || f2 == "0" || f3 == "0") {
+                    mist = Number(mist) + 1;
+                    if (mist <= "3") {
+                        $("#hdnmis").val(mist);
+                    }
+
+                    f = "0";
+                }
+                $("#lbmistake").text(mist);
+            }
+
+            return f;
+
+        }
+        function datachecking(data, vals) {
+            let re = "1";
+            let id = "";
+            const che = data.split(",");
+            for (i = 0; i < che.length; i++) {
+                let a = $("#" + che[i]).text();
+                if (vals == a) {
+                    re = "0";
+                    id = che[i];
+                }
+            }
+            return re + "@" + id;
+        }
+        function fnselect(id) {
+            if ($("#hdnmis").val() == "3") {
+                dailogopen();
+                return false;
+            } else {
+                for (i = 1; i < 10; i++) {
+                    $("#bs" + i).css("background-color", "wheat");
+                    $("#hdnselectvalue").val("");
+                    $("#hdnselboxcolor").val("");
+                }
+                let a = $("#" + id).text();
+                $("#hdnselectvalue").val(a);
+                $("#" + id).css("background-color", "green");
+                $("#hdnselboxcolor").val(id);
+                return false;
+            }
+
+        }
+        function fnspandata(id) {
+
+            if ($("#hdnmis").val() == "3") {
+                dailogopen();
+                return false;
+            }
+
+            if (fncheckingdata(id) == "1" && $("#hdnselectvalue").val() != "") {
+
+                if ($("#" + id).text() == "" && $("#hdnselectvalue").val() != "") {
+                    let a = $("#hdnselectvalue").val();
+                    $("#" + id).text(a);
+                    $("#" + id).css("background-color", "white");
+                    let b = $("#hdnselboxcolor").val();
+                    $("#" + b).css("background-color", "wheat");
+                    $("#hdnselectvalue").val("");
+                    $("#hdnselboxcolor").val("");
+                } else {
+                    //alert("Put In Empty box");
+                    fnalert(id, 'tb');
+                }
+
+            } else if ($("#hdnselectvalue").val() == "") {
+                //alert("Select Number");
+                fnalert(id, 'seltb');
+            } else {
+                //alert("Number Existed");
+                fnalert(id, 'btn');
+            }
+
+            return false;
+        }
+        function fnalert(id, cnttype) {
+
+            if (cnttype == 'tb') {
+                $("#sudokutable").css("background-color", "red");
+                setTimeout(() => {
+                    $("#sudokutable").css("background-color", "white");
+                }, 2000);
+            } else if (cnttype == 'btn') {
+                if ($("#hdnexistid1").val() != "")
+                    $("#" + $("#hdnexistid1").val()).css("background-color", "red");
+                if ($("#hdnexistid2").val() != "")
+                    $("#" + $("#hdnexistid2").val()).css("background-color", "red");
+                if ($("#hdnexistid3").val() != "")
+                    $("#" + $("#hdnexistid3").val()).css("background-color", "red");
+                setTimeout(() => {
+                    if ($("#hdnexistid1").val() != "")
+                        $("#" + $("#hdnexistid1").val()).css("background-color", "white");
+                    if ($("#hdnexistid2").val() != "")
+                        $("#" + $("#hdnexistid2").val()).css("background-color", "white");
+                    if ($("#hdnexistid3").val() != "")
+                        $("#" + $("#hdnexistid3").val()).css("background-color", "white");
+                    $("#hdnexistid1").val('');
+                    $("#hdnexistid2").val('');
+                    $("#hdnexistid3").val('');
+                }, 2000);
+            } else if (cnttype == 'seltb') {
+                $("#selecttb").css("background-color", "red");
+                setTimeout(() => {
+                    $("#selecttb").css("background-color", "buttonface");
+                }, 2000);
+            }
+            return false;
+        }
+        function fntimer() {
+            $("#hdnmin").val(0);
+            $("#hdnsec").val(0);
+            setInterval(() => {
+                let min = $("#hdnmin").val();
+                let sec = $("#hdnsec").val();
+                if (sec <= 59) {
+                    if (sec <= 59) {
+                        sec = Number(sec) + 1;
+                    }
+                    if (sec == 60) {
+                        min = Number(min) + 1;
+                        sec = "00";
+                    }
+
+
+                    if (min < 10) {
+                        min = "0" + Number(min);
+                    }
+                    if (sec < 10) {
+                        sec = "0" + Number(sec);
+                    }
+
+                    $("#hdnmin").val(min);
+                    $("#hdnsec").val(sec);
+                } else {
+                    $("#hdnsec").val(0);
+                }
+                $("#lbmin").text(min);
+                $("#lbsec").text(sec);
+
+            }, 1000);
+        }
+        function fnautofill(dalen) {
+            const a = [];
+            const b = [];
+            let len = dalen;
+            while (a.length < Number(len)) {
+                let x = 10 + Math.floor((Math.random() * 81) + 1);
+                if (x > 10 && x < 100) {
+                    x = "l" + x;
+                    if (a.indexOf(x) == -1) {
+                        a.push(x);
+
+                    }
+                }
+
+            }
+            while (b.length < Number(len)) {
+                for (s = 0; s < a.length; s++) {
+                    let val = Math.floor((Math.random() * 9) + 1);
+                    while ($("#hdnselectvalue").val() == val) {
+                        val = Math.floor((Math.random() * 9) + 1);
+                    }
+                    $("#hdnselectvalue").val(val);
+                    let che = fncheckingdata(a[s]);
+                    if (che == "1") {
+                        $("#" + a[s]).text(val);
+                        fnbackgrocolorchange(a[s]);
+                        b.push(che);
+                        $("#hdnselectvalue").val("");
+                    } else {
+                        s = s - 1;
+                    }
+
+                }
+
+            }
+            $("#lbmistake").text("0");
+            $("#hdnmis").val("0");
+            //alert(a.length + "---" + b.length);
+            /*alert(a.length + "\n\n" + b);*/
+
+            //while (a.length <= 80) {
+            //    let x = Math.floor((Math.random() * 99) + 1);
+            //    if (x >= 11 && x <= 99) {
+            //        let val = Math.floor((Math.random() * 9) + 1);
+            //        $("#hdnselectvalue").val(val);
+            //        let id = "l" + x;
+            //        if (fncheckingdata(id)) {
+            //            if (a.indexOf(id) == -1) {
+            //                $("#" + id).text(val);
+            //                a.push(id);
+            //            }
+            //            $("#hdnselectvalue").val("");
+            //        }
+
+            //    }
+
+            //}
+            return false;
+        }
+        function fnbackgrocolorchange(id) {
+            if (id != "") {
+                $("#" + id).css("background-color", "white");
+            }
+        }
+        function fnids(r, v, b) {
+
+            const ra = ["l11,l12,l13,l14,l15,l16,l17,l18,l19",
+                "l20,l21,l22,l23,l24,l25,l26,l27,l28",
+                "l29,l30,l31,l32,l33,l34,l35,l36,l37",
+                "l38,l39,l40,l41,l42,l43,l44,l45,l46",
+                "l47,l48,l49,l50,l51,l52,l53,l54,l55",
+                "l56,l57,l58,l59,l60,l61,l62,l63,l64",
+                "l65,l66,l67,l68,l69,l70,l71,l72,l73",
+                "l74,l75,l76,l77,l78,l79,l80,l81,l82",
+                "l83,l84,l85,l86,l87,l88,l89,l90,l91"]
+
+            const ba = ["l11,l12,l13,l20,l21,l22,l29,l30,l31",
+                "l14,l15,l16,l23,l24,l25,l32,l33,l34",
+                "l17,l18,l19,l26,l27,l28,l35,l36,l37",
+                "l38,l39,l40,l47,l48,l49,l56,l57,l58",
+                "l41,l42,l43,l50,l51,l52,l59,l60,l61",
+                "l44,l45,l46,l53,l54,l55,l62,l63,l64",
+                "l65,l66,l67,l74,l75,l76,l83,l84,l85",
+                "l68,l69,l70,l77,l78,l79,l86,l87,l88",
+                "l71,l72,l73,l80,l81,l82,l89,l90,l91"]
+
+
+            let va = ["l11,l20,l29,l38,l47,l56,l65,l74,l83",
+                "l12,l21,l30,l39,l48,l57,l66,l75,l84",
+                "l13,l22,l31,l40,l49,l58,l67,l76,l85",
+                "l14,l23,l32,l41,l50,l59,l68,l77,l86",
+                "l15,l24,l33,l42,l51,l60,l69,l78,l87",
+                "l16,l25,l34,l43,l52,l61,l70,l79,l88",
+                "l17,l26,l35,l44,l53,l62,l71,l80,l89",
+                "l18,l27,l36,l45,l54,l63,l72,l81,l90",
+                "l19,l28,l37,l46,l55,l64,l73,l82,l91"]
+
+
+
+            return ra[Number(r) - 1] + "@" + va[Number(v) - 1] + "@" + ba[Number(b) - 1];
+        }
+        function unusedcode() {
+            if (a != "") {
+                for (i = 1; i < 10; i++) {
+                    let d = "l" + b + i;
+                    if (a == $("#" + d).text()) {
+                        f = "0";
+                        $("#hdnexistid1").val(d);
+                    }
+                }
+                for (j = 1; j < 10; j++) {
+                    let e = "l" + (Number(c) + (j * 9));
+                    if (a == $("#" + e).text()) {
+                        f = "0";
+                        $("#hdnexistid2").val(e);
+                    }
+                }
+                //if (b <= 3) {
+                //    for (k = 1; k < 4; k++) {
+                //        if (c < 4) {
+                //            for (q = 1; q < 4; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        } else if (c > 3 && c <= 6) {
+                //            for (q = 4; q <= 7; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        } else if (c > 6 && c <= 9) {
+                //            for (q = 7; q < 10; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+                //if (b > 3 && b <= 6) {
+                //    for (k = 4; k < 7; k++) {
+                //        if (c < 4) {
+                //            for (q = 1; q < 4; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        } else if (c > 3 && c <= 6) {
+                //            for (q = 4; q <= 7; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        } else if (c > 6 && c <= 9) {
+                //            for (q = 7; q < 10; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+                //if (b > 6 && b <= 9) {
+                //    for (k = 7; k < 10; k++) {
+                //        if (c < 4) {
+                //            for (q = 1; q < 4; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        } else if (c > 3 && c <= 6) {
+                //            for (q = 4; q <= c; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        } else if (c > 6 && c <= 9) {
+                //            for (q = 7; q < 10; q++) {
+                //                let z = "l" + k + q;
+                //                if (a == $("#" + z).text()) {
+                //                    f = "0";
+                //                    $("#hdnexistid3").val(z);
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+            } else {
+                f = "0";
+            }
+        }
+        function fnreload() { location.reload() }
+    </script>
+
+</head>
+<body>
+    <div align="center" style="width: 100%">
+        <div align="center" style="width: 90vh;background-color:white;">
+            <fieldset>
+                <legend>SUDOKU</legend>
+                <table style="width:100%;height:0vh" border="0">
+                    <tr>
+                        <td width="25%">
+                            Mistake : <label id="lbmistake">0</label>/3
+                        </td>
+                        <td width="25%">
+                            <button id="open" onclick="return dailogopen();"> open</button>
+                        </td>
+                        <td width="25%">
+                            MODE:<label id="lbmodes"></label>
+                        </td>
+                        <td width="25%" align="right">
+                            Timer:<label id="lbmin">00</label>:<label id="lbsec">00</label>
+                        </td>
+                    </tr>
+                </table>
+                <table id="sudokutable" class="sudokutable" border="1" style="width: 80vh; height: 80vh">
+                    <!--<%--line 1--%>-->
+                    <tr>
+                        <td class="td"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l11"></button></td>
+                        <td class="td"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l12"></button></td>
+                        <td class="td"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l13"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l14"></button></td>
+                        <td class="td"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l15"></button></td>
+                        <td class="td"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l16"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l17"></button></td>
+                        <td class="td"><button v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l18"></button></td>
+                        <td class="td"><button v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l19"></button></td>
+                    </tr>
+                    <!--<%--line 2--%>-->
+                    <tr>
+                        <td class="td"><button r="r2" v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l20"></button></td>
+                        <td class="td"><button r="r2" v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l21"></button></td>
+                        <td class="td"><button r="r2" v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l22"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r2" v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l23"></button></td>
+                        <td class="td"><button r="r2" v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l24"></button></td>
+                        <td class="td"><button r="r2" v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l25"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r2" v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l26"></button></td>
+                        <td class="td"><button r="r2" v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l27"></button></td>
+                        <td class="td"><button r="r2" v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l28"></button></td>
+                    </tr>
+                    <!--<%--line 3--%>-->
+                    <tr>
+                        <td class="td"><button r="r3" v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l29"></button></td>
+                        <td class="td"><button r="r3" v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l30"></button></td>
+                        <td class="td"><button r="r3" v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l31"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r3" v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l32"></button></td>
+                        <td class="td"><button r="r3" v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l33"></button></td>
+                        <td class="td"><button r="r3" v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l34"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r3" v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l35"></button></td>
+                        <td class="td"><button r="r3" v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l36"></button></td>
+                        <td class="td"><button r="r3" v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l37"></button></td>
+                    </tr>
+                    <!--<%-------------------------------wall------------------------------%>-->
+                    <tr>
+                        <td colspan="11" class="trwall"></td>
+                    </tr>
+                    <!--<%-------------------------------wall------------------------------%>-->
+
+                    <!--<%--line 4--%>-->
+                    <tr>
+                        <td class="td"><button r="r4" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l38"></button></td>
+                        <td class="td"><button r="r4" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l39"></button></td>
+                        <td class="td"><button r="r4" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l40"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r4" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l41"></button></td>
+                        <td class="td"><button r="r4" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l42"></button></td>
+                        <td class="td"><button r="r4" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l43"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r4" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l44"></button></td>
+                        <td class="td"><button r="r4" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l45"></button></td>
+                        <td class="td"><button r="r4" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l46"></button></td>
+                    </tr>
+                    <!--<%--line 5--%>-->
+                    <tr>
+                        <td class="td"><button r="r5" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l47"></button></td>
+                        <td class="td"><button r="r5" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l48"></button></td>
+                        <td class="td"><button r="r5" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l49"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r5" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l50"></button></td>
+                        <td class="td"><button r="r5" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l51"></button></td>
+                        <td class="td"><button r="r5" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l52"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r5" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l53"></button></td>
+                        <td class="td"><button r="r5" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l54"></button></td>
+                        <td class="td"><button r="r5" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l55"></button></td>
+                    </tr>
+                    <!--<%--line 6--%>-->
+                    <tr>
+                        <td class="td"><button r="r6" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l56"></button></td>
+                        <td class="td"><button r="r6" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l57"></button></td>
+                        <td class="td"><button r="r6" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l58"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r6" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l59"></button></td>
+                        <td class="td"><button r="r6" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l60"></button></td>
+                        <td class="td"><button r="r6" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l61"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r6" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l62"></button></td>
+                        <td class="td"><button r="r6" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l63"></button></td>
+                        <td class="td"><button r="r6" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l64"></button></td>
+                    </tr>
+                    <!--<%-------------------------------wall------------------------------%>-->
+                    <tr>
+                        <td colspan="11" class="trwall"></td>
+                    </tr>
+                    <!--<%-------------------------------wall------------------------------%>-->
+                    <!--<%--line 7--%>-->
+                    <tr>
+                        <td class="td"><button r="r7" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l65"></button></td>
+                        <td class="td"><button r="r7" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l66"></button></td>
+                        <td class="td"><button r="r7" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l67"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r7" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l68"></button></td>
+                        <td class="td"><button r="r7" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l69"></button></td>
+                        <td class="td"><button r="r7" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l70"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r7" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l71"></button></td>
+                        <td class="td"><button r="r7" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l72"></button></td>
+                        <td class="td"><button r="r7" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l73"></button></td>
+                    </tr>
+                    <!--<%--line 8--%>-->
+                    <tr>
+                        <td class="td"><button r="r8" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l74"></button></td>
+                        <td class="td"><button r="r8" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l75"></button></td>
+                        <td class="td"><button r="r8" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l76"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r8" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l77"></button></td>
+                        <td class="td"><button r="r8" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l78"></button></td>
+                        <td class="td"><button r="r8" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l79"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r8" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l80"></button></td>
+                        <td class="td"><button r="r8" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l81"></button></td>
+                        <td class="td"><button r="r8" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l82"></button></td>
+                    </tr>
+                    <!--<%--line 9--%>-->
+                    <tr>
+                        <td class="td"><button r="r9" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l83"></button></td>
+                        <td class="td"><button r="r9" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l84"></button></td>
+                        <td class="td"><button r="r9" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l85"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r9" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l86"></button></td>
+                        <td class="td"><button r="r9" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l87"></button></td>
+                        <td class="td"><button r="r9" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l88"></button></td>
+                        <td class="tdwall"></td>
+                        <td class="td"><button r="r9" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l89"></button></td>
+                        <td class="td"><button r="r9" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l90"></button></td>
+                        <td class="td"><button r="r9" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l91"></button></td>
+                    </tr>
+                </table>
+
+            </fieldset>
+            <fieldset>
+                <table id="selecttb" class="setable">
+                    <tr>
+                        <td><button class="spdata2" id="bs1" onclick="return fnselect(this.id)">1</button></td>
+                        <td><button class="spdata2" id="bs2" onclick="return fnselect(this.id)">2</button></td>
+                        <td><button class="spdata2" id="bs3" onclick="return fnselect(this.id)">3</button></td>
+                        <td><button class="spdata2" id="bs4" onclick="return fnselect(this.id)">4</button></td>
+                        <td><button class="spdata2" id="bs5" onclick="return fnselect(this.id)">5</button></td>
+                        <td><button class="spdata2" id="bs6" onclick="return fnselect(this.id)">6</button></td>
+                        <td><button class="spdata2" id="bs7" onclick="return fnselect(this.id)">7</button></td>
+                        <td><button class="spdata2" id="bs8" onclick="return fnselect(this.id)">8</button></td>
+                        <td><button class="spdata2" id="bs9" onclick="return fnselect(this.id)">9</button></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+    <div id="datacontainer"></div>
+    <div id="maindata" style="display: none">
+        <table width="100%" height="100%" align="center" border="0">
+            <tr>
+                <td align="right" width="50%">Mode:</td>
+                <td>
+                    <select id="modes">
+                        <option>Easy</option>
+                        <option>Medium</option>
+                        <option>Hard</option>
+
+                    </select>
+                    <span id="spmode" style="display:none"></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <button id="btsel" onclick="return selectmode()">
+                        OK
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td id="hides1" class="hides" colspan="2" align="center" style="display:none"> Mistake:<label id="lbmistpop"></label></td>
+            </tr>
+            <tr>
+                <td id="hides2" colspan="2" class="hides" align="center" style="display:none" onclick="return fnreload()">  <button>Refresh</button> </td>
+            </tr>
+        </table>
+
+    </div>
+    <input type="hidden" id="hdnselectvalue" />
+    <input type="hidden" id="hdnselboxcolor" />
+    <input type="hidden" id="hdnexistid1" />
+    <input type="hidden" id="hdnexistid2" />
+    <input type="hidden" id="hdnexistid3" />
+    <input type="hidden" id="hdnmin" />
+    <input type="hidden" id="hdnsec" />
+    <input type="hidden" id="hdnmis" />
+</body>
+</html>
