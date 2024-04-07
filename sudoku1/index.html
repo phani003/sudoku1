@@ -91,25 +91,51 @@
             
 
         });
+        function checkcompleted() {
+            let cn = 0;
+            for (i = 0; i < 9; i++) {
+                let boxes = fnids("0", "0", i+1).split("@")[2];
+                const che = boxes.split(",");
+                let x = [];
+                for (k = 0; k < che.length; k++) {
+                    let ch = $("#" + che[k]).text();
+                    if (ch != "") {
+                        x.push(che[k]);
+                    }
+                    if (x.length == 9) {
+                        cn = Number(cn) + 1;
+                    }
+                }              
+            }
+            $("#lbboxes").text(cn);
+            if (cn == 9) {
+                dailogopen();
+                $("#hides3").show();
+                $("#hides1").show();
+                $("#hides2").show();               
+                return false;
+            }
+        }
         var modess = "";
         function selectmode() {
             let modes = $("#modes").val();
             modess = $("#modes").val();
             if (modes == "Easy") {
                 fntimer();
-                fnautofill("15");
+                fnautofill("7");
             } else if (modes == "Medium") {
                 fntimer();
-                fnautofill("12");
+                fnautofill("13");
             } else if (modes == "Hard") {
                 fntimer();
-                fnautofill("6");
+                fnautofill("18");
             }
             $("#modes").hide();
             $("#spmode").show();
             $("#spmode").text(modes);
             $("#btsel").hide();
             $("#lbmodes").text(modes);
+            $("#hides2").show();
             $("#maindata").dialog("close");
 
         }
@@ -231,7 +257,7 @@
                 //alert("Number Existed");
                 fnalert(id, 'btn');
             }
-
+            checkcompleted();
             return false;
         }
         function fnalert(id, cnttype) {
@@ -520,18 +546,23 @@
                 <legend>SUDOKU</legend>
                 <table id="headertable" style="width: 594px;" border="0">
                     <tr>
-                        <td width="25%">
+                        <td width="20%">
                             Mistake : <label id="lbmistake">0</label>/3
                         </td>
-                        <td width="25%">
+                        <td width="20%">
                             <button id="open" onclick="return dailogopen();"> open</button>
                         </td>
-                        <td width="25%">
+                        <td width="20%">
                             MODE:<label id="lbmodes"></label>
                         </td>
-                        <td width="25%" align="right">
+                        <td width="20%" >
+                            BoxsCompleted:<label id="lbboxes">0</label>/9
+                        </td>
+                        <td width="20%" align="right">
                             Timer:<label id="lbmin">00</label>:<label id="lbsec">00</label>
                         </td>
+
+                        
                     </tr>
                 </table>
                 <table id="sudokutable" class="sudokutable" style="width:594px;height:594px"  border="1" >
@@ -718,7 +749,10 @@
                 <td id="hides1" class="hides" colspan="2" align="center" style="display:none"> Mistake:<label id="lbmistpop"></label></td>
             </tr>
             <tr>
-                <td id="hides2" colspan="2" class="hides" align="center" style="display:none" onclick="return fnreload()">  <button>Refresh</button> </td>
+                <td id="hides2" colspan="2" class="hides" align="center" style="display:none"  onclick="return fnreload()">  <button>Refresh</button> </td>
+            </tr>
+            <tr>
+                <td colspan="2" id="hides3" align="center" style="display:none" > Winner </td>
             </tr>
         </table>
 
