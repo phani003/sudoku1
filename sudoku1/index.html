@@ -71,7 +71,7 @@
             box-shadow: 0 0 50px 15px #48abe0;
         }
         .sudokutables {
-            display: flex;
+            
             align-items: center;
             justify-content: center;
         }
@@ -348,10 +348,27 @@
         function fnalert(id, cnttype) {
 
             if (cnttype == 'tb') {
-                $("#sudokutable").css("background-color", "red");
-                setTimeout(() => {
-                    $("#sudokutable").css("background-color", "white");
-                }, 2000);
+                if (tabless == "t1") {
+
+                    $("#sudokutable1").css("background-color", "red");
+                    setTimeout(() => {
+                        $("#sudokutable1").css("background-color", "white");
+                    }, 2000);
+
+                } else if (tabless == "t2") {
+
+                    $("#sudokutable").css("background-color", "red");
+                    setTimeout(() => {
+                        $("#sudokutable").css("background-color", "white");
+                    }, 2000);
+
+                } else if (tabless == "t3") {
+                    $("#sudokutable2").css("background-color", "red");
+                    setTimeout(() => {
+                        $("#sudokutable2").css("background-color", "white");
+                    }, 2000);
+                }
+                
             } else if (cnttype == 'btn') {
                 if ($("#hdnexistid1").val() != "")
                     $("#" + $("#hdnexistid1").val()).css("background-color", "red");
