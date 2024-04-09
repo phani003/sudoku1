@@ -43,6 +43,8 @@
             width: 35px;
             height: 35px;
             text-align: center;
+            align-items: center;
+            
         }
 
         .spdata {
@@ -68,6 +70,11 @@
             
             box-shadow: 0 0 50px 15px #48abe0;
         }
+        .sudokutables {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         
     </style>
@@ -82,15 +89,58 @@
                 modal: true,
                 autoOpen: false,
                 title: "SUDOKU",
-                append:"#datacontainer"
                 
             });
-
-            setTimeout(() => { dailogopen(); }, 2000);
-
-            
+            $("#modesele").dialog({
+                resizable: false,
+                width: 500,
+                height: 400,
+                modal: true,
+                autoOpen: false,
+                title: "SUDOKU"
+            });
+            $("#winner").dialog({
+                resizable: false,
+                width: 600,
+                height: 300,
+                modal: true,
+                autoOpen: false,
+                title: "SUDOKU"
+            });
+          
+            dailogtype();
 
         });
+
+        var modess = "";
+        var tabless = "";
+        var totalboxss = "";
+        function fnselecttype() {
+            let types = $("#ultype").val();
+            if (types == "2") {
+                $("#sudokutable1").show();
+                tabless = "t1";
+                $("#boxs").text("2");
+                totalboxss = 2;
+
+            } else if (types == "9") {
+                $("#sudokutable").show();
+                tabless = "t2";
+                $("#boxs").text("9");
+                totalboxss = 9;
+            } else if (types == "4") {
+                $("#sudokutable2").show();
+                tabless = "t3";
+                $("#boxs").text("4");
+                totalboxss = 4;
+            }
+
+            if (types != "") {
+                $("#modesele").dialog("close");
+                setTimeout(() => { dailogopen(); }, 1500);
+            }          
+            return false;
+        }
         function checkcompleted() {
             let cn = 0;
             for (i = 0; i < 9; i++) {
@@ -108,28 +158,50 @@
                 }              
             }
             $("#lbboxes").text(cn);
-            if (cn == 9) {
-                dailogopen();
-                $("#hides3").show();
-                $("#hides1").show();
-                $("#hides2").show();               
+            if (cn == totalboxss) {
+                $("#winner").dialog("open");               
                 return false;
             }
-        }
-        var modess = "";
+        }   
         function selectmode() {
             let modes = $("#modes").val();
             modess = $("#modes").val();
-            if (modes == "Easy") {
-                fntimer();
-                fnautofill("7");
-            } else if (modes == "Medium") {
-                fntimer();
-                fnautofill("13");
-            } else if (modes == "Hard") {
-                fntimer();
-                fnautofill("18");
+            if (tabless == "t1") {
+                if (modes == "Easy") {
+                    fntimer();
+                    fnautofill("1");
+                } else if (modes == "Medium") {
+                    fntimer();
+                    fnautofill("2");
+                } else if (modes == "Hard") {
+                    fntimer();
+                    fnautofill("3");
+                }
+            } else if (tabless == "t2") {
+
+                if (modes == "Easy") {
+                    fntimer();
+                    fnautofill("7");
+                } else if (modes == "Medium") {
+                    fntimer();
+                    fnautofill("13");
+                } else if (modes == "Hard") {
+                    fntimer();
+                    fnautofill("18");
+                }
+            } else if (tabless == "t3") {
+                if (modes == "Easy") {
+                    fntimer();
+                    fnautofill("3");
+                } else if (modes == "Medium") {
+                    fntimer();
+                    fnautofill("6");
+                } else if (modes == "Hard") {
+                    fntimer();
+                    fnautofill("9");
+                }
             }
+            
             $("#modes").hide();
             $("#spmode").show();
             $("#spmode").text(modes);
@@ -139,7 +211,15 @@
             $("#maindata").dialog("close");
 
         }
+        function dailogtype() {
+            $("#modesele").dialog("open");
+            return false;
+        }
         function dailogopen() {
+            if (tabless == "") {
+                dailogtype();
+                return false;
+            }
             $("#maindata").dialog("open");
             if ($("#hdnmis").val() == "3") {
                 $("#hides1").show();
@@ -202,6 +282,11 @@
             return re + "@" + id;
         }
         function fnselect(id) {
+
+            if (tabless == "") {
+                dailogtype();
+                return false;
+            }
             if (modess == "") {
                 dailogopen();
                 return false;
@@ -325,22 +410,50 @@
                 $("#lbsec").text(sec);
 
             }, 1000);
-        }
+        }      
         function fnautofill(dalen) {
             const a = [];
             const b = [];
             let len = dalen;
-            while (a.length < Number(len)) {
-                let x = 10 + Math.floor((Math.random() * 81) + 1);
-                if (x > 10 && x < 100) {
-                    x = "l" + x;
-                    if (a.indexOf(x) == -1) {
-                        a.push(x);
+            if (tabless == "t1") {
+                while (a.length < Number(len)) {
+                    let x = 10 + Math.floor((Math.random() * 18) + 1);
+                    if (x > 10 && x < 29) {
+                        x = "d" + x;
+                        if (a.indexOf(x) == -1) {
+                            a.push(x);
 
+                        }
                     }
+
                 }
 
+            } else if (tabless == "t2") {
+                while (a.length < Number(len)) {
+                    let x = 10 + Math.floor((Math.random() * 81) + 1);
+                    if (x > 10 && x < 100) {
+                        x = "l" + x;
+                        if (a.indexOf(x) == -1) {
+                            a.push(x);
+
+                        }
+                    }
+
+                }
+            } else if (tabless == "t3") {
+                while (a.length < Number(len)) {
+                    let x = 10 + Math.floor((Math.random() * 36) + 1);
+                    if (x > 10 && x < 47) {
+                        x = "f" + x;
+                        if (a.indexOf(x) == -1) {
+                            a.push(x);
+
+                        }
+                    }
+
+                }
             }
+           
             while (b.length < Number(len)) {
                 for (s = 0; s < a.length; s++) {
                     let val = Math.floor((Math.random() * 9) + 1);
@@ -391,7 +504,25 @@
             }
         }
         function fnids(r, v, b) {
+            let data = "";
+            if (tabless == "t1") {
+                data = fntable1(r, v, b);
+            } else if (tabless == "t2") {
+                data = fntable2(r, v, b);
+            } else if (tabless == "t3") {
+                data = fntable3(r, v, b)
+            }
+            return data;
+        }
+        function fntable1(r, v, b) {
 
+            const ra = ["d11,d12,d13,d14,d15,d16","d17,d18,d19,d20,d21,d22","d23,d24,d25,d26,d27,d28"];
+            const va = ["d11,d17,d23","d12,d18,d24","d13,d19,d25","d14,d20,d26","d15,d21,d27","d16,d22,d28"];
+            const ba = ["d11,d12,d13,d17,d18,d19,d23,d24,d25","d14,d15,d16,d20,d21,d22,d26,d27,d28"];
+
+            return ra[Number(r) - 1] + "@" + va[Number(v) - 1] + "@" + ba[Number(b) - 1];
+        }
+        function fntable2(r, v, b) {
             const ra = ["l11,l12,l13,l14,l15,l16,l17,l18,l19",
                 "l20,l21,l22,l23,l24,l25,l26,l27,l28",
                 "l29,l30,l31,l32,l33,l34,l35,l36,l37",
@@ -423,6 +554,28 @@
                 "l18,l27,l36,l45,l54,l63,l72,l81,l90",
                 "l19,l28,l37,l46,l55,l64,l73,l82,l91"]
 
+
+
+            return ra[Number(r) - 1] + "@" + va[Number(v) - 1] + "@" + ba[Number(b) - 1];
+        }
+        function fntable3(r, v, b) {
+
+            const ra = ["f11,f12,f13,f14,f15,f16",
+                "f17,f18,f19,f20,f21,f22",
+                "f23,f24,f25,f26,f27,f28",
+                "f29,f30,f31,f32,f33,f34",
+                "f35,f36,f37,f38,f39,f40",
+                "f41,f42,f43,f44,f45,f46"
+
+            ];
+
+            const va = ["f11,f17,f23,f29,f35,f41", "f12,f18,f24,f30,f36,f42",
+                "f13,f19,f25,f31,f37,f43", "f14,f20,f26,f32,f38,f44",
+                "f15,f21,f27,f33,f39,f45", "f16,f22,f28,f34,f40,f46"
+            ];
+
+            const ba = ["f11,f12,f13,f17,f18,f19,f23,f24,f25", "f14,f15,f16,f20,f21,f22,f26,f27,f28",
+                "f29,f30,f31,f35,f36,f37,f41,f42,f43", "f32,f33,f34,f38,f39,f40,f44,f45,f46"];
 
 
             return ra[Number(r) - 1] + "@" + va[Number(v) - 1] + "@" + ba[Number(b) - 1];
@@ -541,170 +694,261 @@
 <body align="center" >
 
     <div align="center" id="alldiv" class="maindivss" style="width:100%;z-index:-100"  >
-        <div align="center" id="maindiv" class="maindiv" style="background-color: white; width: 630px; height: 780px">
+        <div align="center" id="maindiv" class="maindiv" style="background-color: white; width: 660px; height:800px">
             <fieldset>
-                <legend>SUDOKU</legend>
-                <table id="headertable" style="width: 594px;" border="0">
-                    <tr>
-                        <td width="20%">
-                            Mistake : <label id="lbmistake">0</label>/3
-                        </td>
-                        <td width="20%">
-                            <button id="open" onclick="return dailogopen();"> open</button>
-                        </td>
-                        <td width="20%">
-                            MODE:<label id="lbmodes"></label>
-                        </td>
-                        <td width="20%" >
-                            BoxsCompleted:<label id="lbboxes">0</label>/9
-                        </td>
-                        <td width="20%" align="right">
-                            Timer:<label id="lbmin">00</label>:<label id="lbsec">00</label>
-                        </td>
+                <legend style="color:red;tab-size:40px">>SUDOKU<</legend>
+                <div align="center" style="width: 630px;">
+                    <table id="headertable" style="width: 594px;" border="0">
+                        <tr>
+                            <td width="20%">
+                                Mistake : <label id="lbmistake">0</label>/3
+                            </td>
+                            <td width="20%">
+                                <button id="open" onclick="return dailogopen();"> open</button>
+                            </td>
+                            <td width="20%">
+                                MODE:<label id="lbmodes"></label>
+                            </td>
+                            <td width="20%">
+                                BoxsCompleted:<label id="lbboxes">0</label>/<label id="boxs">0</label>
+                            </td>
+                            <td width="20%" align="right">
+                                Timer:<label id="lbmin">00</label>:<label id="lbsec">00</label>
+                            </td>
 
-                        
-                    </tr>
-                </table>
-                <table id="sudokutable" class="sudokutable" style="width:594px;height:594px"  border="1" >
-                    <!--<%--line 1--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l11"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l12"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l13"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l14"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l15"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l16"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l17"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l18"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l19"></button></td>
-                    </tr>
-                    <!--<%--line 2--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l20"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l21"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l22"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l23"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l24"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l25"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l26"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l27"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r2" v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l28"></button></td>
-                    </tr>
-                    <!--<%--line 3--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l29"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l30"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l31"></button></td>
-                        <td class="tdwall" style="width:0px"  ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l32"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l33"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l34"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l35"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l36"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r3" v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l37"></button></td>
-                    </tr>
-                    <!--<%-------------------------------wall------------------------------%>-->
-                    <tr>
-                        <td colspan="11" class="trwall"></td>
-                    </tr>
-                    <!--<%-------------------------------wall------------------------------%>-->
 
-                    <!--<%--line 4--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l38"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l39"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l40"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l41"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l42"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l43"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l44"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l45"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r4" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l46"></button></td>
-                    </tr>
-                    <!--<%--line 5--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l47"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l48"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l49"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l50"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l51"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l52"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l53"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l54"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r5" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l55"></button></td>
-                    </tr>
-                    <!--<%--line 6--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l56"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l57"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l58"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l59"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l60"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l61"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l62"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l63"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r6" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l64"></button></td>
-                    </tr>
-                    <!--<%-------------------------------wall------------------------------%>-->
-                    <tr>
-                        <td colspan="11" class="trwall"></td>
-                    </tr>
-                    <!--<%-------------------------------wall------------------------------%>-->
-                    <!--<%--line 7--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l65"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l66"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l67"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l68"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l69"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l70"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l71"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l72"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r7" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l73"></button></td>
-                    </tr>
-                    <!--<%--line 8--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l74"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l75"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l76"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l77"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l78"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l79"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l80"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l81"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r8" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l82"></button></td>
-                    </tr>
-                    <!--<%--line 9--%>-->
-                    <tr>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l83"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l84"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l85"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l86"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l87"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l88"></button></td>
-                        <td class="tdwall" style="width:0px" ></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l89"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l90"></button></td>
-                        <td class="td" style="width:66px;height:66px"><button r="r9" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l91"></button></td>
-                    </tr>
-                </table>
-
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="sudokutables" style=" width: 630px; height: 630px;" >
+                    <table id="sudokutable" class="sudokutable" style="width:594px;height:594px;display:none" border="1">
+                        <!--<%--line 1--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l11"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l12"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l13"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l14"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l15"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l16"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l17"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l18"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l19"></button></td>
+                        </tr>
+                        <!--<%--line 2--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l20"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l21"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l22"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l23"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l24"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l25"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l26"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l27"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r2" v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l28"></button></td>
+                        </tr>
+                        <!--<%--line 3--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l29"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l30"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" id="l31"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l32"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l33"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" id="l34"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v7" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l35"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v8" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l36"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r3" v="v9" b="b3" class="spdata" onclick="return fnspandata(this.id)" id="l37"></button></td>
+                        </tr>
+                        <!--<%-------------------------------wall------------------------------%>-->
+                        <tr>
+                            <td colspan="11" class="trwall"></td>
+                        </tr>
+                        <!--<%-------------------------------wall------------------------------%>-->
+                        <!--<%--line 4--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l38"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l39"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l40"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l41"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l42"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l43"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l44"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l45"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r4" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l46"></button></td>
+                        </tr>
+                        <!--<%--line 5--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l47"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l48"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l49"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l50"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l51"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l52"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l53"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l54"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r5" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l55"></button></td>
+                        </tr>
+                        <!--<%--line 6--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v1" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l56"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v2" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l57"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v3" b="b4" class="spdata" onclick="return fnspandata(this.id)" id="l58"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v4" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l59"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v5" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l60"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v6" b="b5" class="spdata" onclick="return fnspandata(this.id)" id="l61"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v7" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l62"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v8" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l63"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r6" v="v9" b="b6" class="spdata" onclick="return fnspandata(this.id)" id="l64"></button></td>
+                        </tr>
+                        <!--<%-------------------------------wall------------------------------%>-->
+                        <tr>
+                            <td colspan="11" class="trwall"></td>
+                        </tr>
+                        <!--<%-------------------------------wall------------------------------%>-->
+                        <!--<%--line 7--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l65"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l66"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l67"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l68"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l69"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l70"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l71"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l72"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r7" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l73"></button></td>
+                        </tr>
+                        <!--<%--line 8--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l74"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l75"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l76"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l77"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l78"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l79"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l80"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l81"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r8" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l82"></button></td>
+                        </tr>
+                        <!--<%--line 9--%>-->
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v1" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l83"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v2" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l84"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v3" b="b7" class="spdata" onclick="return fnspandata(this.id)" id="l85"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v4" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l86"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v5" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l87"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v6" b="b8" class="spdata" onclick="return fnspandata(this.id)" id="l88"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v7" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l89"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v8" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l90"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button r="r9" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l91"></button></td>
+                        </tr>
+                    </table>
+                    <table id="sudokutable1" class="sudokutable" style="display: none;width:396px;height:198px" border="1">
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d11"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d12"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d13"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d14"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d15"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d16"></button></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="d17"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="d18"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="d19"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="d20"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="d21"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="d22"></button></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d23"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d24"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d25"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d26"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d27"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d28"></button></td>
+                        </tr>
+                    </table>
+                    <table id="sudokutable2" class="sudokutable" style="display:none;width:396px;height:396px" border="1">
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f11"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f12"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f13"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f14"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f15"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f16"></button></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="f17"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="f18"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="f19"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="f20"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="f21"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r2" id="f22"></button></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="f23"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="f24"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="f25"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="f26"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="f27"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="f28"></button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" class="trwall"></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r4" id="f29"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r4" id="f30"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r4" id="f31"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r4" id="f32"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r4" id="f33"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r4" id="f34"></button></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r5" id="f35"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r5" id="f36"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r5" id="f37"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r5" id="f38"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r5" id="f39"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r5" id="f40"></button></td>
+                        </tr>
+                        <tr>
+                            <td class="td" style="width:66px;height:66px"><button v="v1" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f41"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v2" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f42"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v3" b="b3" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f43"></button></td>
+                            <td class="tdwall" style="width:0px"></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v4" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f44"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v5" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f45"></button></td>
+                            <td class="td" style="width:66px;height:66px"><button v="v6" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f46"></button></td>
+                        </tr>
+                    </table>
+                </div>
             </fieldset>
             <fieldset>
                 <table id="selecttb" class="setable" style="width: 594px; height: 66px">
@@ -756,6 +1000,35 @@
             </tr>
         </table>
 
+    </div>
+    <div id="modesele" style="display: none; width: 250px; height: 200px"  >
+
+        <table width="100%" height="100%" align="center" border="0">
+            <tr><td colspan="2">Suduko Type</td></tr>
+            <tr>
+                <td> Type :</td>
+                <td>
+
+                    <select style="width:95px" id="ultype">
+                        <option value="2">2 Boxes</option>
+                        <option value="4">4 Boxes</option>
+                        <option value="9">9 Boxes</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td align="center" colspan="2"> <button style="width:75px" onclick="return fnselecttype()">OK</button> </td></tr>
+        </table>
+
+    </div>
+    <div id="winner" style="display: none;">
+        <div align="center" style="width:100%">
+            <label>WINNER</label>
+        </div>
+        <br />
+        <br />
+        <div align="center" style="width:100%">
+            <button onclick="return fnreload()">Play Again</button>
+        </div>
     </div>
     <input type="hidden" id="hdnselectvalue" />
     <input type="hidden" id="hdnselboxcolor" />
