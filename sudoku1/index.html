@@ -8,6 +8,15 @@
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/jquery1_3.js"></script>
     <style type="text/css">
+
+
+        @media (min-width:650px){
+
+
+
+
+
+        }
           
         body {
             background-image: url('images/back2.jpg');
@@ -16,7 +25,7 @@
         }
         .sudokutable {
             border-collapse: collapse;
-            border-color: black;
+            
         }
 
         .td {
@@ -60,7 +69,7 @@
             font-size: 16px;
         }
         .maindivss {
-            height: 110vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -73,6 +82,7 @@
         .sudokutables {
             display: grid;
             place-items: center;
+            
         }
 
         
@@ -200,7 +210,7 @@
                     fnautofill("9");
                 }
             }
-            
+
             $("#modes").hide();
             $("#spmode").show();
             $("#spmode").text(modes);
@@ -709,14 +719,14 @@
 </head>
 <body align="center" >
 
-    <div align="center" id="alldiv" class="maindivss" style="width:100%;z-index:-100"  >
-        <div align="center" id="maindiv" class="maindiv" style="background-color: white; width: 660px; height:800px">
+    <div align="center" id="alldiv" class="maindivss" style="width:100%;"  >
+        <div align="center" id="maindiv" class="maindiv" style="background-color: inherit; width: 660px; height:780px">
             <fieldset>
                 <legend style="color:red;tab-size:40px">>SUDOKU<</legend>
                 <div align="center" style="width: 630px;">
                     <table id="headertable" style="width: 594px;" border="0">
-                        <tr>
-                            <td width="20%">
+                        <tr style="color:white">
+                            <td width="20%" >
                                 Mistake : <label id="lbmistake">0</label>/3
                             </td>
                             <td width="20%">
@@ -738,7 +748,7 @@
                 </div>
                 
                 <div align="center" class="sudokutables" style=" width: 630px; height: 630px;" >
-                    <table id="sudokutable" class="sudokutable" style="width:594px;height:594px;display:none" border="1">
+                    <table id="sudokutable" class="sudokutable" style="width:594px;height:594px;display:none" border="0">
                         <!--<%--line 1--%>-->
                         <tr>
                             <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="l11"></button></td>
@@ -876,7 +886,7 @@
                             <td class="td" style="width:66px;height:66px"><button r="r9" v="v9" b="b9" class="spdata" onclick="return fnspandata(this.id)" id="l91"></button></td>
                         </tr>
                     </table>
-                    <table id="sudokutable1" class="sudokutable" style="display: none;width:396px;height:198px;" border="1">
+                    <table id="sudokutable1" class="sudokutable" style="display: none;width:396px;height:198px;" border="0">
                         <tr>
                             <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d11"></button></td>
                             <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="d12"></button></td>
@@ -905,7 +915,7 @@
                             <td class="td" style="width:66px;height:66px"><button v="v6" b="b2" class="spdata" onclick="return fnspandata(this.id)" r="r3" id="d28"></button></td>
                         </tr>
                     </table>
-                    <table id="sudokutable2" class="sudokutable" style="display:none;width:396px;height:396px" border="1">
+                    <table id="sudokutable2" class="sudokutable" style="display:none;width:396px;height:396px" border="0">
                         <tr>
                             <td class="td" style="width:66px;height:66px"><button v="v1" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f11"></button></td>
                             <td class="td" style="width:66px;height:66px"><button v="v2" b="b1" class="spdata" onclick="return fnspandata(this.id)" r="r1" id="f12"></button></td>
@@ -1022,9 +1032,8 @@
         <table width="100%" height="100%" align="center" border="0">
             <tr><td colspan="2">Suduko Type</td></tr>
             <tr>
-                <td> Type :</td>
-                <td>
-
+                <td width="50%" align="right"> Type :</td>
+                <td width="50%" align="left">
                     <select style="width:95px" id="ultype">
                         <option value="2">2 Boxes</option>
                         <option value="4">4 Boxes</option>
