@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/jquerycss.css" />
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/jquery1_3.js"></script>
+    <script type="text/javascript" src="js/sudokutables.js"></script>
     <style type="text/css">
 
 
@@ -84,8 +85,11 @@
             place-items: center;
             
         }
-
         
+        .multitables {
+            border: red;
+            border-collapse: collapse;
+        }
     </style>
     <script type="text/javascript">
 
@@ -116,6 +120,8 @@
                 autoOpen: false,
                 title: "SUDOKU"
             });
+
+           
           
             dailogtype();
 
@@ -126,7 +132,7 @@
         var totalboxss = "";
         function fnselecttype() {
             let types = $("#ultype").val();
-            if (types == "2") {
+            if (types == "22") {
                 $("#sudokutable1").show();
                 tabless = "t1";
                 $("#boxs").text("2");
@@ -142,6 +148,15 @@
                 tabless = "t3";
                 $("#boxs").text("4");
                 totalboxss = 4;
+            } else if (types == "3") {
+                $("#multitable").show();
+                fntables4();
+            } else if (types == "1") {
+                $("#multitable").show();
+                fntables4();
+            } else if (types == "2") {
+                $("#multitable").show();
+                fntables4();
             }
 
             if (types != "") {
@@ -150,8 +165,20 @@
             }          
             return false;
         }
+        function fntables4() {
+            let tbs = $("#ultype").val();
+            let tbshape = $("#tbshapes").val();
+            tabless = "t4";
+            tablecreate(tbs, tbshape);
+            $("#boxs").text(tbs);
+            totalboxss = tbs;
+            endids = endids - 10;
+            
+        }
+        let cn = 0;
+        let timerss = '';
         function checkcompleted() {
-            let cn = 0;
+            cn = 0;
             for (i = 0; i < 9; i++) {
                 let boxes = fnids("0", "0", i+1).split("@")[2];
                 const che = boxes.split(",");
@@ -168,7 +195,8 @@
             }
             $("#lbboxes").text(cn);
             if (cn == totalboxss) {
-                $("#winner").dialog("open");               
+                $("#winner").dialog("open"); 
+                clearInterval(timerss);
                 return false;
             }
         }   
@@ -209,6 +237,23 @@
                     fntimer();
                     fnautofill("9");
                 }
+            } else if (tabless == "t4") {
+
+                let tbs = $("#ultype").val();
+
+                
+                let filldata = filldatas(tbs, modes);
+
+                if (modes == "Easy") {
+                    fntimer();
+                    fnautofill(filldata);
+                } else if (modes == "Medium") {
+                    fntimer();
+                    fnautofill(filldata);
+                } else if (modes == "Hard") {
+                    fntimer();
+                    fnautofill(filldata);
+                }
             }
 
             $("#modes").hide();
@@ -233,6 +278,7 @@
             if ($("#hdnmis").val() == "3") {
                 $("#hides1").show();
                 $("#hides2").show();
+                $("#btnpalyagain").text("Play Again");
                 $("#lbmistpop").text($("#hdnmis").val());
             }
             return false;
@@ -272,6 +318,11 @@
                     f = "0";
                 }
                 $("#lbmistake").text(mist);
+                if (mist == 3) {
+                    clearInterval(timerss);
+                    dailogopen();
+                }
+
             }
 
             return f;
@@ -291,7 +342,11 @@
             return re + "@" + id;
         }
         function fnselect(id) {
-
+            if (cn == totalboxss && cn != '') {
+                $("#winner").dialog("open");
+                clearInterval(timerss);
+                return false;
+            }
             if (tabless == "") {
                 dailogtype();
                 return false;
@@ -326,6 +381,7 @@
 
             if ($("#hdnmis").val() == "3") {
                 dailogopen();
+                clearInterval(timerss);
                 return false;
             }
 
@@ -376,6 +432,11 @@
                     setTimeout(() => {
                         $("#sudokutable2").css("background-color", "inherit");
                     }, 2000);
+                } else if (tabless == "t4") {
+                    $("#multitable").css("background-color", "red");
+                    setTimeout(() => {
+                        $("#multitable").css("background-color", "inherit");
+                    }, 2000);
                 }
                 
             } else if (cnttype == 'btn') {
@@ -399,15 +460,15 @@
             } else if (cnttype == 'seltb') {
                 $("#selecttb").css("background-color", "red");
                 setTimeout(() => {
-                    $("#selecttb").css("background-color", "buttonface");
+                    $("#selecttb").css("background-color", "inherit");
                 }, 2000);
             }
             return false;
-        }
+        }      
         function fntimer() {
             $("#hdnmin").val(0);
             $("#hdnsec").val(0);
-            setInterval(() => {
+            timerss = setInterval(() => {
                 let min = $("#hdnmin").val();
                 let sec = $("#hdnsec").val();
                 if (sec <= 59) {
@@ -434,6 +495,8 @@
                 }
                 $("#lbmin").text(min);
                 $("#lbsec").text(sec);
+                $("#lbtimemi").text(min);
+                $("#lbtimese").text(sec);
 
             }, 1000);
         }      
@@ -471,6 +534,20 @@
                     let x = 10 + Math.floor((Math.random() * 36) + 1);
                     if (x > 10 && x < 47) {
                         x = "f" + x;
+                        if (a.indexOf(x) == -1) {
+                            a.push(x);
+
+                        }
+                    }
+
+                }
+            } else if (tabless == "t4") {
+
+                while (a.length < Number(len)) {
+                    let x = 10 + Math.floor((Math.random() * Number(endids)) + 1);
+                    let y = (Number(endids) + 10)
+                    if (x > 10 && x < y) {
+                        x = "p" + x;
                         if (a.indexOf(x) == -1) {
                             a.push(x);
 
@@ -537,6 +614,8 @@
                 data = fntable2(r, v, b);
             } else if (tabless == "t3") {
                 data = fntable3(r, v, b)
+            } else if (tabless == "t4") {
+                data = fntable4(r, v, b)
             }
             return data;
         }
@@ -604,6 +683,12 @@
                 "f29,f30,f31,f35,f36,f37,f41,f42,f43", "f32,f33,f34,f38,f39,f40,f44,f45,f46"];
 
 
+            return ra[Number(r) - 1] + "@" + va[Number(v) - 1] + "@" + ba[Number(b) - 1];
+        }
+        function fntable4(r, v, b) {
+            const ra = rowno;
+            const va = verno;
+            const ba = boxno;
             return ra[Number(r) - 1] + "@" + va[Number(v) - 1] + "@" + ba[Number(b) - 1];
         }
         function unusedcode() {
@@ -714,6 +799,46 @@
             }
         }
         function fnreload() { location.reload() }
+        function fnshowshape(id) {
+            let val = $("#" + id).val();
+            if (val == "3" || val == "2") {
+                $("#trshape").show();
+            } else {
+                $("#trshape").hide();
+            }
+            return false;
+        }
+        function filldatas(boxes,mod) {
+            let val = 0;
+            if (boxes == 1) {
+                if (mod == "Easy") {
+                    val = 1;
+                } else if (mod == "Medium") {
+                    val = 2;
+                } else {
+                    val = 2;
+                }
+            } else if (boxes == 2) {
+                if (mod == "Easy") {
+                    val = 2;
+                } else if (mod == "Medium") {
+                    val = 3;
+                } else {
+                    val = 3;
+                }
+            } else if (boxes == 3) {
+                if (mod == "Easy") {
+                    val = 3;
+                } else if (mod == "Medium") {
+                    val = 4;
+                } else {
+                    val = 5;
+                }
+            }
+
+
+            return val;
+        }
     </script>
 
 </head>
@@ -974,6 +1099,7 @@
                             <td class="td" style="width:66px;height:66px"><button v="v6" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f46"></button></td>
                         </tr>
                     </table>
+                    <table id="multitable" class="multitables" style="display:none" border="1" ></table>
                 </div>
             </fieldset>
             <fieldset>
@@ -1011,7 +1137,7 @@
             <tr>
                 <td colspan="2" align="center">
                     <button id="btsel" onclick="return selectmode()">
-                        OK
+                        Play
                     </button>
                 </td>
             </tr>
@@ -1019,7 +1145,7 @@
                 <td id="hides1" class="hides" colspan="2" align="center" style="display:none"> Mistake:<label id="lbmistpop"></label></td>
             </tr>
             <tr>
-                <td id="hides2" colspan="2" class="hides" align="center" style="display:none"  onclick="return fnreload()">  <button>Refresh</button> </td>
+                <td id="hides2" colspan="2" class="hides" align="center" style="display:none"  >  <button id="btnpalyagain" onclick="return fnreload()">Change Mode</button> </td>
             </tr>
             <tr>
                 <td colspan="2" id="hides3" align="center" style="display:none" > Winner </td>
@@ -1034,14 +1160,25 @@
             <tr>
                 <td width="50%" align="right"> Type :</td>
                 <td width="50%" align="left">
-                    <select style="width:95px" id="ultype">
+                    <select style="width:95px" id="ultype" onchange="return fnshowshape(this.id)" >
+                        <option value="1">1 Box</option>
                         <option value="2">2 Boxes</option>
+                        <option value="3">3 Boxes</option>
                         <option value="4">4 Boxes</option>
                         <option value="9">9 Boxes</option>
                     </select>
                 </td>
             </tr>
-            <tr><td align="center" colspan="2"> <button style="width:75px" onclick="return fnselecttype()">OK</button> </td></tr>
+            <tr id="trshape" style="display:none" >
+            <td width="50%" align="right">Shape:</td>
+            <td width="50%" align="left">
+                <select style="width:105px" id="tbshapes">
+                    <option value="v">Vertical</option>
+                    <option value="h">Harizantal</option>
+                </select>
+
+            </td></tr>
+            <tr><td align="center" colspan="2"> <button style="width:75px" onclick="return fnselecttype()">Select</button> </td></tr>
         </table>
 
     </div>
@@ -1050,9 +1187,12 @@
             <label>WINNER</label>
         </div>
         <br />
+        <div align="center" style="width:100%">
+            Completed Time :> <label id="lbtimemi" ></label>:<label id="lbtimese"></label>
+        </div>
         <br />
         <div align="center" style="width:100%">
-            <button onclick="return fnreload()">Play Again</button>
+            <button onclick="return fnreload()">Play-Again</button>
         </div>
     </div>
     <input type="hidden" id="hdnselectvalue" />
