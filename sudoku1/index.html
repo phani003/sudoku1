@@ -10,14 +10,8 @@
     <script type="text/javascript" src="js/sudokutables.js"></script>
     <style type="text/css">
 
+       
 
-        @media (min-width:650px){
-
-
-
-
-
-        }
           
         body {
             background-image: url('images/back2.jpg');
@@ -87,9 +81,16 @@
         }
         
         .multitables {
-            border: red;
+            border: 5px groove red;
             border-collapse: collapse;
+
         }
+        .btnimagess{
+            background-color:lightblue;
+        }
+            .btnimagess:hover {
+                background-color: lightsalmon;
+            }
     </style>
     <script type="text/javascript">
 
@@ -101,6 +102,10 @@
                 height: 400,
                 modal: true,
                 autoOpen: false,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    of: window },
                 title: "SUDOKU",
                 
             });
@@ -110,6 +115,10 @@
                 height: 400,
                 modal: true,
                 autoOpen: false,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    of: window },
                 title: "SUDOKU"
             });
             $("#winner").dialog({
@@ -118,45 +127,139 @@
                 height: 300,
                 modal: true,
                 autoOpen: false,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    of: window },
                 title: "SUDOKU"
             });
 
-           
-          
-            dailogtype();
+            $("#imagebtn").dialog({
+                resizable: false,
+                width: 600,
+                height: 600,
+                modal: true,
+                autoOpen: false,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    of: window },
+                title: "SUDOKU"
+            });
 
+            $(".ui-dialog-titlebar").hide();
+           //dailogtype();
+            fnimagebtns();
         });
+
+        function fnimagebtns() {
+            $("#imagebtn").dialog("open");
+            return false;
+        }
+        function fnimages(data) {
+            const idss = ["11.png", "12.png", "13.png", "21.png", "22.png", "23.png", "31.png", "32.png", "33.png"];
+
+            let pha = $("#imgids").attr("src").split("/")[1];
+
+            let indimg = idss.indexOf(pha);
+
+            if (data == "<") {
+
+                if (indimg == 0) {
+                    $("#imgids").attr("src", "sudima/" + idss[8]);
+                } else {
+                    let dd = indimg - 1;
+                    $("#imgids").attr("src", "sudima/" + idss[dd]);
+                }
+                
+            } else {
+
+                if (indimg == 8) {
+                    $("#imgids").attr("src", "sudima/" + idss[0]);
+                } else {
+                    let dd = indimg + 1;
+                    $("#imgids").attr("src", "sudima/" + idss[dd]);
+                }
+
+            }
+
+
+        }
+        function fnimageselect() {
+            let pha = $("#imgids").attr("src").split("/")[1].split(".")[0];
+            let v = pha.split("")[0];
+            let h = pha.split("")[1];
+            fnimastart(v, h);
+            return false;
+        }
+        function fnimastart(v, h){
+
+            tabless = "t4";
+
+            let ttables = Number(v) * Number(h);
+
+            $("#boxs").text(ttables);
+
+            fndubletable(v, h);
+
+            totalboxss = ttables;
+
+            endids = $("#hdnendid").val() - 11;
+
+
+            
+                $("#imagebtn").dialog("close");
+                setTimeout(() => { dailogopen(); }, 1000);
+           
+
+        }
+
+        function imagebtnopen() {
+            $("#imagebtn").dialog("open");
+            return false;
+        }
 
         var modess = "";
         var tabless = "";
         var totalboxss = "";
         function fnselecttype() {
             let types = $("#ultype").val();
-            if (types == "22") {
-                $("#sudokutable1").show();
-                tabless = "t1";
-                $("#boxs").text("2");
-                totalboxss = 2;
+           
+            let h = $("#ultypes").val();
+            if (h != "") {
+                $("#multitable").show();
+                fntable5();
 
-            } else if (types == "9") {
-                $("#sudokutable").show();
-                tabless = "t2";
-                $("#boxs").text("9");
-                totalboxss = 9;
-            } else if (types == "4") {
-                $("#sudokutable2").show();
-                tabless = "t3";
-                $("#boxs").text("4");
-                totalboxss = 4;
-            } else if (types == "3") {
-                $("#multitable").show();
-                fntables4();
-            } else if (types == "1") {
-                $("#multitable").show();
-                fntables4();
-            } else if (types == "2") {
-                $("#multitable").show();
-                fntables4();
+            } else {
+
+
+
+                if (types == "22") {
+                    $("#sudokutable1").show();
+                    tabless = "t1";
+                    $("#boxs").text("2");
+                    totalboxss = 2;
+
+                } else if (types == "9") {
+                    $("#sudokutable").show();
+                    tabless = "t2";
+                    $("#boxs").text("9");
+                    totalboxss = 9;
+                } else if (types == "4") {
+                    $("#sudokutable2").show();
+                    tabless = "t3";
+                    $("#boxs").text("4");
+                    totalboxss = 4;
+                } else if (types == "3") {
+                    $("#multitable").show();
+                    fntables4();
+                } else if (types == "1") {
+                    $("#multitable").show();
+                    fntables4();
+                } else if (types == "2") {
+                    $("#multitable").show();
+                    fntables4();
+                }
             }
 
             if (types != "") {
@@ -165,15 +268,35 @@
             }          
             return false;
         }
+       
         function fntables4() {
             let tbs = $("#ultype").val();
             let tbshape = $("#tbshapes").val();
             tabless = "t4";
+            
             tablecreate(tbs, tbshape);
             $("#boxs").text(tbs);
             totalboxss = tbs;
             endids = endids - 10;
             
+        }
+        function fntable5() {
+            let v = $("#ultype").val();
+
+            let h = $("#ultypes").val();
+            
+            tabless = "t4";
+
+            let ttables = Number(v) * Number(h);
+
+            $("#boxs").text(ttables);
+
+            fndubletable(v, h);
+
+            totalboxss = ttables;
+
+            endids = $("#hdnendid").val() - 11;
+           
         }
         let cn = 0;
         let timerss = '';
@@ -239,10 +362,16 @@
                 }
             } else if (tabless == "t4") {
 
-                let tbs = $("#ultype").val();
+                //let tbs = $("#ultype").val();
+                //let tbss = $("#ultypes").val();
 
+                let pha = $("#imgids").attr("src").split("/")[1].split(".")[0];
+                let tbs = pha.split("")[0];
+                let tbss = pha.split("")[1];
+
+                let totals = Number(tbs) * Number(tbss);
                 
-                let filldata = filldatas(tbs, modes);
+                let filldata = filldatas(totals, modes);
 
                 if (modes == "Easy") {
                     fntimer();
@@ -254,8 +383,10 @@
                     fntimer();
                     fnautofill(filldata);
                 }
-            }
 
+                
+            }
+            $("#hdnmis").val("0");
             $("#modes").hide();
             $("#spmode").show();
             $("#spmode").text(modes);
@@ -263,6 +394,8 @@
             $("#lbmodes").text(modes);
             $("#hides2").show();
             $("#maindata").dialog("close");
+            
+            
 
         }
         function dailogtype() {
@@ -270,12 +403,13 @@
             return false;
         }
         function dailogopen() {
+            $(".ui-dialog-titlebar").show();
             if (tabless == "") {
-                dailogtype();
+                imagebtnopen();
                 return false;
             }
             $("#maindata").dialog("open");
-            if ($("#hdnmis").val() == "3") {
+            if ($("#hdnmis").val() == '3') {
                 $("#hides1").show();
                 $("#hides2").show();
                 $("#btnpalyagain").text("Play Again");
@@ -317,11 +451,7 @@
 
                     f = "0";
                 }
-                $("#lbmistake").text(mist);
-                if (mist == 3) {
-                    clearInterval(timerss);
-                    dailogopen();
-                }
+                
 
             }
 
@@ -348,7 +478,8 @@
                 return false;
             }
             if (tabless == "") {
-                dailogtype();
+                imagebtnopen();
+                //dailogtype();
                 return false;
             }
             if (modess == "") {
@@ -373,6 +504,8 @@
 
         }
         function fnspandata(id) {
+
+            
 
             if (modess == "") {
                 dailogopen();
@@ -406,6 +539,13 @@
             } else {
                 //alert("Number Existed");
                 fnalert(id, 'btn');
+            }
+            let mist = $("#hdnmis").val();
+            $("#lbmistake").text(mist);
+            if (mist == 3) {
+                clearInterval(timerss);
+                dailogopen();
+                
             }
             checkcompleted();
             return false;
@@ -542,12 +682,12 @@
 
                 }
             } else if (tabless == "t4") {
-
+                
                 while (a.length < Number(len)) {
                     let x = 10 + Math.floor((Math.random() * Number(endids)) + 1);
                     let y = (Number(endids) + 10)
                     if (x > 10 && x < y) {
-                        x = "p" + x;
+                        x = "m" + x;
                         if (a.indexOf(x) == -1) {
                             a.push(x);
 
@@ -576,9 +716,11 @@
 
                 }
 
+               
             }
             $("#lbmistake").text("0");
             $("#hdnmis").val("0");
+            
             //alert(a.length + "---" + b.length);
             /*alert(a.length + "\n\n" + b);*/
 
@@ -834,6 +976,34 @@
                 } else {
                     val = 5;
                 }
+            } else if (boxes == 4) {
+                if (mod == "Easy") {
+                    val = 5;
+                } else if (mod == "Medium") {
+                    val = 7;
+                } else {
+                    val = 9;
+                }
+
+            } else if (boxes == 6) {
+
+                if (mod == "Easy") {
+                    val = 9;
+                } else if (mod == "Medium") {
+                    val = 11;
+                } else {
+                    val = 13;
+                }
+
+            } else if (boxes == 9) {
+
+                if (mod == "Easy") {
+                    val = 7;
+                } else if (mod == "Medium") {
+                    val = 13;
+                } else {
+                    val = 18;
+                }
             }
 
 
@@ -844,7 +1014,7 @@
 </head>
 <body align="center" >
 
-    <div align="center" id="alldiv" class="maindivss" style="width:100%;"  >
+    <div align="center" id="alldiv" class="maindivss" style="width:100%"   >
         <div align="center" id="maindiv" class="maindiv" style="background-color: inherit; width: 660px; height:780px">
             <fieldset>
                 <legend style="color:red;tab-size:40px">>SUDOKU<</legend>
@@ -855,7 +1025,7 @@
                                 Mistake : <label id="lbmistake">0</label>/3
                             </td>
                             <td width="20%">
-                                <button id="open" onclick="return dailogopen();"> open</button>
+                                <button id="open" onclick="return dailogopen();"> Change Mode</button>
                             </td>
                             <td width="20%">
                                 MODE:<label id="lbmodes"></label>
@@ -872,7 +1042,7 @@
                     </table>
                 </div>
                 
-                <div align="center" class="sudokutables" style=" width: 630px; height: 630px;" >
+                <div align="center" class="sudokutables" style=" width: 630px; height: 630px;vertical-align:central">
                     <table id="sudokutable" class="sudokutable" style="width:594px;height:594px;display:none" border="0">
                         <!--<%--line 1--%>-->
                         <tr>
@@ -1099,7 +1269,7 @@
                             <td class="td" style="width:66px;height:66px"><button v="v6" b="b4" class="spdata" onclick="return fnspandata(this.id)" r="r6" id="f46"></button></td>
                         </tr>
                     </table>
-                    <table id="multitable" class="multitables" style="display:none" border="1" ></table>
+                    <table id="multitable" class="multitables" style="display:none" border="1"></table> 
                 </div>
             </fieldset>
             <fieldset>
@@ -1153,19 +1323,30 @@
         </table>
 
     </div>
+
+
     <div id="modesele" style="display: none; width: 250px; height: 200px"  >
 
         <table width="100%" height="100%" align="center" border="0">
-            <tr><td colspan="2">Suduko Type</td></tr>
+            <tr><td colspan="4">Suduko Type</td></tr>
             <tr>
-                <td width="50%" align="right"> Type :</td>
-                <td width="50%" align="left">
-                    <select style="width:95px" id="ultype" onchange="return fnshowshape(this.id)" >
-                        <option value="1">1 Box</option>
-                        <option value="2">2 Boxes</option>
-                        <option value="3">3 Boxes</option>
-                        <option value="4">4 Boxes</option>
-                        <option value="9">9 Boxes</option>
+                <td width="25%" align="center"> ROWS :</td>
+                <td width="25%" align="center">
+                    <select style="width:95px" id="ultype" >
+                        <option value="1">1 Row</option>
+                        <option value="2">2 Rows</option>
+                        <option value="3">3 Rows</option>
+                    </select>
+                </td>
+                <td width="25%" align="center">
+                    Tables
+                </td>
+                <td width="25%" align="center">
+                    <select style="width:95px" id="ultypes" >
+                        <option value="1">1 </option>
+                        <option value="2">2 </option>
+                        <option value="3">3 </option>
+                      
                     </select>
                 </td>
             </tr>
@@ -1178,10 +1359,12 @@
                 </select>
 
             </td></tr>
-            <tr><td align="center" colspan="2"> <button style="width:75px" onclick="return fnselecttype()">Select</button> </td></tr>
+            <tr><td align="center" colspan="4"> <button style="width:75px" onclick="return fnselecttype()">Select</button> </td></tr>
         </table>
 
     </div>
+
+
     <div id="winner" style="display: none;">
         <div align="center" style="width:100%">
             <label>WINNER</label>
@@ -1195,6 +1378,38 @@
             <button onclick="return fnreload()">Play-Again</button>
         </div>
     </div>
+
+    <div id="imagebtn" style="display: none;" >
+
+        <div align="center" style="width:100%;height:100%" >
+            
+
+
+                <table style="width:100%;height:100%" border="0">
+                    <tr>
+
+                        <td width="10%">
+                            <button class="btnimagess" style="width:100%;height:100%" onclick="return fnimages('<')" ><</button>
+                        </td>
+                        <td width="80%">
+
+                            <button class="imagbtn" style="width:100%;height:100%" >
+                                <img id="imgids" src="sudima/11.png" style="width: 100%; height: 100%; background-size: cover;" onclick="return fnimageselect();" />
+                            </button>
+
+                        </td>
+                        <td width="10%">
+                            <button class="btnimagess" style="width:100%;height:100%" onclick="return fnimages('>')">></button>
+                        </td>
+
+                    </tr>
+                </table>
+
+            
+
+        </div>
+    </div>
+
     <input type="hidden" id="hdnselectvalue" />
     <input type="hidden" id="hdnselboxcolor" />
     <input type="hidden" id="hdnexistid1" />
@@ -1203,6 +1418,7 @@
     <input type="hidden" id="hdnmin" />
     <input type="hidden" id="hdnsec" />
     <input type="hidden" id="hdnmis" />
+    <input type="hidden" id="hdnendid" />
 
 </body>
 </html>
