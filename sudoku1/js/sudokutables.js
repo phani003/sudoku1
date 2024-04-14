@@ -1,4 +1,4 @@
-﻿
+
 const tableids = [];
 const rowno = ['', '', '', '', '', '', '', '', ''];
 const verno = ['', '', '', '', '', '', '', '', ''];
@@ -173,5 +173,129 @@ function idsstoretoarray(boxs,shape) {
     //rowno = raa;
     //verno = vaa;
 
+    
+}
+
+let cntid = 11;
+
+function fndubletable( v , h ) {
+
+    
+
+    let maintable = '';
+
+    for (kk = 0; kk < v; kk++) {
+
+        maintable += '<tr>';
+
+        let vid = 0;
+
+        let rowid = 1 + (kk * 3);
+
+        for (ll = 0; ll < h; ll++) {
+
+            
+            maintable += '<td>';
+             
+            maintable += innertables( rowid , vid);
+
+            maintable += '</td>';
+
+            vid = vid + 3;
+        }
+
+
+        maintable += '</tr>';
+        
+    }
+
+    let wid = h * 192;
+    let hit = v * 192;
+
+    $("#multitable").append(maintable);
+
+    let hw = "width:" + wid + "px;" + "height:" + hit + "px;";
+
+    $("#multitable").attr("style", hw);
+
+    idsstoreintoarray();
+
+    $("#hdnendid").val(cntid);
+
+    return false;
+}
+
+
+let bids = 1;
+
+
+function innertables( rowid , vid) { 
+
+    let rids = rowid;
+
+    let innertable = '<table style="height:192px;width:192px" border="0">';
+
+    let boxids = '';
+
+    for (k = 1; k < 4; k++) {
+
+        innertable += '<tr>';
+
+        for (j = 1; j < 4; j++) {
+
+            let vrid = vid + j;
+             
+            innertable += '<td>';
+
+            innertable += '<button   v="v' + vrid + '"   r="r' + rids + '"   b="b' + bids + '"  id="m' + cntid + '"  class="spdata" style="width:60px;height:60px" onclick="return fnspandata(this.id)" ></button>';
+
+            innertable += '</td>';
+
+            if (boxids == "") {
+                boxids = "m" + cntid;
+            } else {
+                boxids = boxids + ",m" + cntid;
+            }            
+
+            cntid = cntid + 1;
+        }
+
+        rids = rids + 1;
+
+        innertable += '</tr>';
+    }
+
+    innertable += '</table>';
+
+    boxno.push(boxids);
+
+    bids = bids + 1;
+
+    return innertable;
+}
+
+function idsstoreintoarray() {
+
+    for (j = 11; j < cntid ; j++) {
+        let id = $("#m" + j);
+        let ra = id.attr("r").substring(1, 2);
+        let raindex = rowno[ra - 1];
+        if (raindex == '') {
+            raindex = id.attr("id");
+        } else {
+            raindex = raindex + ',' + id.attr("id");
+        }
+        rowno[ra - 1] = raindex;
+        let va = id.attr("v").substring(1, 2);
+        let vaindex = verno[va - 1];
+        if (vaindex == '') {
+            vaindex = id.attr("id");
+        } else {
+            vaindex = vaindex + ',' + id.attr("id");
+        }
+        verno[va - 1] = vaindex;
+
+
+    }
     
 }
